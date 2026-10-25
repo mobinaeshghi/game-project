@@ -1,0 +1,176 @@
+# مبینا عشقی - تست‌های بازی Memory Match
+
+import unittest
+import memory_match_with_original_audio_fixed
+
+
+class TestGameLogic(unittest.TestCase):
+
+    def setUp(self):
+        # برای هر تست، یک نمونهٔ تازه از منطق بازی ساخته می‌شود.
+        self.logic = memory_match_with_original_audio_fixed.GameLogic()
+
+    def test_initial_state(self):
+        # در شروع بازی امتیاز، زنجیره و شمارنده‌ها صفر و ضریب برابر ۱ است.
+        self.assertEqual(self.logic.score, 0)
+        self.assertEqual(self.logic.multiplier, 1)
+        self.assertEqual(self.logic.streak, 0)
+        self.assertEqual(self.logic.correct, 0)
+        self.assertEqual(self.logic.total, 0)
+        self.assertIsNone(self.logic.previous)
+        self.assertIn(
+            self.logic.current,
+            memory_match_with_original_audio_fixed.SHAPES
+        )
+
+    def test_yes_correct_when_cards_match(self):
+        # وقتی دو کارت یکسان‌اند، پاسخ «بله» باید درست باشد و ۱۰۰ امتیاز بدهد.
+        self.logic.previous = self.logic.current = "circle"
+
+        self.assertTrue(self.logic.answer(True))
+        self.assertEqual(self.logic.score, 100)
+        self.assertEqual(self.logic.correct, 1)
+        self.assertEqual(self.logic.total, 1)
+
+    def test_no_correct_when_cards_differ(self):
+        # وقتی دو کارت متفاوت‌اند، پاسخ «خیر» باید درست ثبت شود.
+        self.logic.previous, self.logic.current = "circle", "square"
+
+        self.assertTrue(self.logic.answer(False))
+        self.assertEqual(self.logic.score, 100)
+        self.assertEqual(self.logic.correct, 1)
+        self.assertEqual(self.logic.total, 1)
+
+    def test_yes_wrong_when_cards_differ(self):
+        # پاسخ «بله» برای دو کارت متفاوت اشتباه است و امتیاز نمی‌دهد.
+        self.logic.previous, self.logic.current = "circle", "triangle"
+
+        self.assertFalse(self.logic.answer(True))
+        self.assertEqual(self.logic.score, 0)
+        self.assertEqual(self.logic.streak, 0)
+        self.assertEqual(self.logic.correct, 0)
+        self.assertEqual(self.logic.total, 1)
+
+    def test_no_wrong_when_cards_match(self):
+        # پاسخ «خیر» برای دو کارت یکسان باید اشتباه شمرده شود.
+        self.logic.previous = self.logic.current = "flower"
+
+        self.assertFalse(self.logic.answer(False))
+        self.assertEqual(self.logic.correct, 0)
+        self.assertEqual(self.logic.total, 1)
+
+    def test_multiplier_increases_after_four_correct(self):
+        # چهار پاسخ درست پیاپی ضریب را یک واحد بالا می‌برد و زنجیره را صفر می‌کند.
+        for _ in range(
+            memory_match_with_original_audio_fixed.HITS_PER_LEVEL
+        ):
+            self.logic.previous = self.logic.current = "circle"
+            self.assertTrue(self.logic.answer(True))
+
+        self.assertEqual(self.logic.multiplier, 2)
+        self.assertEqual(self.logic.streak, 0)
+        self.assertEqual(self.logic.score, 400)
+
+    def test_wrong_answer_resets_streak_and_reduces_multiplier(self):
+        # پاسخ اشتباه زنجیره را صفر می‌کند و ضریب ۳ را به ۲ کاهش می‌دهد.
+        self.logic.multiplier = 3
+        self.logic.streak = 2
+        self.logic.previous, self.logic.current = "circle", "square"
+
+        self.assertFalse(self.logic.answer(True))
+        self.assertEqual(self.logic.multiplier, 2)
+        self.assertEqual(self.logic.streak, 0)
+
+    def test_multiplier_floor_is_one(self):
+        # ضریب در اثر پاسخ اشتباه نباید از ۱ کمتر شود.
+        self.logic.multiplier = 1
+        self.logic.previous, self.logic.current = "circle", "square"
+
+        self.assertFalse(self.logic.answer(True))
+        self.assertEqual(self.logic.multiplier, 1)
+
+    def test_multiplier_cap(self):
+        # ضریب در بیشترین مقدار مجاز نباید از سقف تعیین‌شده عبور کند.
+        self.logic.multiplier = (
+            memory_match_with_original_audio_fixed.MAX_MULTIPLIER
+        )
+        self.logic.streak = (
+            memory_match_with_original_audio_fixed.HITS_PER_LEVEL - 1
+        )
+        self.logic.previous = self.logic.current = "circle"
+
+        self.assertTrue(self.logic.answer(True))
+        self.assertEqual(
+            self.logic.multiplier,
+            memory_match_with_original_audio_fixed.MAX_MULTIPLIER
+        )
+
+    def test_score_uses_current_multiplier(self):
+        # با ضریب ۲، پاسخ درست باید ۲۰۰ امتیاز به امتیاز کل اضافه کند.
+        self.logic.multiplier = 2
+        self.logic.previous = self.logic.current = "circle"
+
+        self.assertTrue(self.logic.answer(True))
+        self.assertEqual(self.logic.score, 200)
+
+    def test_bonus_at_minimum_multiplier(self):
+        # پاداش پایان بازی در ضریب ۱ برابر مقدار پایهٔ پاداش است.
+        self.logic.multiplier = 1
+
+        self.assertEqual(
+            self.logic.end_bonus(),
+            memory_match_with_original_audio_fixed.BONUS_PER_LEVEL
+        )
+
+    def test_bonus_at_maximum_multiplier(self):
+        # پاداش پایان بازی در بیشترین ضریب، برابر ضریب ضرب‌در پاداش پایه است.
+        self.logic.multiplier = (
+            memory_match_with_original_audio_fixed.MAX_MULTIPLIER
+        )
+
+        self.assertEqual(
+            self.logic.end_bonus(),
+            memory_match_with_original_audio_fixed.MAX_MULTIPLIER
+            * memory_match_with_original_audio_fixed.BONUS_PER_LEVEL
+        )
+
+    def test_shapes_are_four_unique_values(self):
+        # بازی باید چهار شکل متفاوت داشته باشد.
+        shapes = memory_match_with_original_audio_fixed.SHAPES
+
+        self.assertEqual(len(shapes), 4)
+        self.assertEqual(len(set(shapes)), 4)
+
+    def test_advance_moves_current_to_previous(self):
+        # با رفتن به کارت بعدی، کارت فعلی باید به‌عنوان کارت قبلی ذخیره شود.
+        old_current = self.logic.current
+
+        self.logic.advance()
+
+        self.assertEqual(self.logic.previous, old_current)
+        self.assertIn(
+            self.logic.current,
+            memory_match_with_original_audio_fixed.SHAPES
+        )
+
+    def test_new_card_without_previous_is_valid_shape(self):
+        # اگر کارت قبلی وجود نداشته باشد، کارت تازه باید یکی از شکل‌های معتبر باشد.
+        self.logic.previous = None
+
+        self.assertIn(
+            self.logic._new_card(),
+            memory_match_with_original_audio_fixed.SHAPES
+        )
+
+    def test_new_card_with_previous_is_valid_shape(self):
+        # با وجود کارت قبلی، کارت تولیدشده باید یکی از شکل‌های معتبر باشد.
+        self.logic.previous = "circle"
+
+        self.assertIn(
+            self.logic._new_card(),
+            memory_match_with_original_audio_fixed.SHAPES
+        )
+
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)
