@@ -1,0 +1,49 @@
+Spreadsheet runtime warmup failed during python startup
+Traceback (most recent call last):
+  File "/tmp/tmp.QlpUkOUI9D/artifact_tool_v2-2.8.66/artifact_tool/patches/warm_spreadsheet_runtime_on_startup.py", line 26, in warm_spreadsheet_runtime_on_startup
+  File "/tmp/tmp.QlpUkOUI9D/artifact_tool_v2-2.8.66/artifact_tool/spreadsheet_warmup.py", line 785, in warm_spreadsheet_runtime
+  File "/tmp/tmp.QlpUkOUI9D/artifact_tool_v2-2.8.66/artifact_tool/spreadsheet_warmup.py", line 718, in _warm_feature_flows
+  File "/tmp/tmp.QlpUkOUI9D/artifact_tool_v2-2.8.66/artifact_tool/spreadsheet_warmup.py", line 509, in _warm_drawing_and_image_flows
+  File "/tmp/tmp.QlpUkOUI9D/artifact_tool_v2-2.8.66/artifact_tool/generated/interface/models.py", line 32861, in bring_to_front
+  File "/tmp/tmp.QlpUkOUI9D/artifact_tool_v2-2.8.66/artifact_tool/rpc/remote.py", line 764, in __call__
+  File "/tmp/tmp.QlpUkOUI9D/artifact_tool_v2-2.8.66/artifact_tool/rpc/client.py", line 175, in call
+artifact_tool.rpc.client.RemoteError: Element ordering requires an owning element collection.
+test_add_driver (test_delivery_system.TestDeliverySystem.test_add_driver) ... ok
+test_assign_busy_driver_raises (test_delivery_system.TestDeliverySystem.test_assign_busy_driver_raises) ... ok
+test_assign_nearest_compatible_order (test_delivery_system.TestDeliverySystem.test_assign_nearest_compatible_order) ... ok
+test_assign_unknown_driver_raises (test_delivery_system.TestDeliverySystem.test_assign_unknown_driver_raises) ... ok
+test_count_orders_includes_all_statuses (test_delivery_system.TestDeliverySystem.test_count_orders_includes_all_statuses) ... ok
+test_create_order_ids_are_sequential (test_delivery_system.TestDeliverySystem.test_create_order_ids_are_sequential) ... ok
+test_duplicate_driver_does_not_increase_count (test_delivery_system.TestDeliverySystem.test_duplicate_driver_does_not_increase_count) ... ok
+test_empty_system (test_delivery_system.TestDeliverySystem.test_empty_system) ... ok
+test_equal_positions_do_not_consume_id (test_delivery_system.TestDeliverySystem.test_equal_positions_do_not_consume_id) ... ok
+test_get_unknown_entities (test_delivery_system.TestDeliverySystem.test_get_unknown_entities) ... ok
+test_invalid_transition_does_not_change_state (test_delivery_system.TestDeliverySystem.test_invalid_transition_does_not_change_state) ... ok
+test_near_drivers_only_returns_free (test_delivery_system.TestDeliverySystem.test_near_drivers_only_returns_free) ... ok
+test_nearest_pending_order (test_delivery_system.TestDeliverySystem.test_nearest_pending_order) ... ok
+test_order_cost_includes_new_pending_order (test_delivery_system.TestDeliverySystem.test_order_cost_includes_new_pending_order) ... ok
+test_order_history_keeps_assigned_driver (test_delivery_system.TestDeliverySystem.test_order_history_keeps_assigned_driver) ... ok
+test_order_lifecycle_and_payment (test_delivery_system.TestDeliverySystem.test_order_lifecycle_and_payment) ... ok
+test_read_only_system_properties (test_delivery_system.TestDeliverySystem.test_read_only_system_properties) ... ok
+test_bool_coordinate_rejected (test_driver.TestDriver.test_bool_coordinate_rejected) ... ok
+test_initial_values (test_driver.TestDriver.test_initial_values) ... ok
+test_invalid_category (test_driver.TestDriver.test_invalid_category) ... ok
+test_is_available_when_free (test_driver.TestDriver.test_is_available_when_free) ... ok
+test_position_wrong_length (test_driver.TestDriver.test_position_wrong_length) ... ok
+test_position_wrong_type (test_driver.TestDriver.test_position_wrong_type) ... ok
+test_read_only_credit (test_driver.TestDriver.test_read_only_credit) ... ok
+test_username_bad_format (test_driver.TestDriver.test_username_bad_format) ... ok
+test_username_wrong_type (test_driver.TestDriver.test_username_wrong_type) ... ok
+test_report_contains_current_credit_and_position (test_extension.TestDriverReportExtension.test_report_contains_current_credit_and_position) ... ok
+test_report_counts_completed_orders (test_extension.TestDriverReportExtension.test_report_counts_completed_orders) ... ok
+test_report_for_unknown_driver (test_extension.TestDriverReportExtension.test_report_for_unknown_driver) ... ok
+test_cost_must_be_decimal (test_order.TestOrder.test_cost_must_be_decimal) ... ok
+test_cost_must_be_positive (test_order.TestOrder.test_cost_must_be_positive) ... ok
+test_initial_values (test_order.TestOrder.test_initial_values) ... ok
+test_order_id_must_be_positive (test_order.TestOrder.test_order_id_must_be_positive) ... ok
+test_read_only_status (test_order.TestOrder.test_read_only_status) ... ok
+
+----------------------------------------------------------------------
+Ran 34 tests in 0.003s
+
+OK
