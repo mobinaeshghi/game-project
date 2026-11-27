@@ -33,6 +33,7 @@ class DeliverySystem:
         return len(self._drivers)
 
     def add_driver(self, username, position, service_category):
+        #اگ از اینیت استفاده میکردیم تعداد راننده ها ثابت میشد
         username = validate_username(username)
         position = validate_position(position)
         service_category = validate_category(service_category)
@@ -51,12 +52,11 @@ class DeliverySystem:
         if starting_position == finishing_position:
             return None
 
-        pending_count = sum(
-            1
-            for order in self._orders.values()
-            if order.service_category == service_category and order.is_pending()
-        )
-        distance = manhattan(starting_position, finishing_position)
+        pending_count = 0
+        for order in self._orders.values():
+            if order.service_category == service_category and order.is_pending():
+              pending_count += 1
+         distance = manhattan(starting_position, finishing_position)
         cost = Decimal("100") * Decimal(pending_count + 1 + distance)
 
         order_id = self._next_order_id

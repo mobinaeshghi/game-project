@@ -18,6 +18,7 @@ class Order:
         cost,
     ):
         self._order_id = validate_positive_int(order_id, "order_id")
+        #چون نام رو از اول مقدار دهی نکرده بودیم الان لازمه رشته برگردونیم اوردر ای دی رو
         self._service_category = validate_category(service_category)
         self._starting_position = validate_position(starting_position)
         self._finishing_position = validate_position(finishing_position)

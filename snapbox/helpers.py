@@ -21,10 +21,9 @@ def validate_position(position):
         raise TypeError("position must be a tuple")
     if len(position) != 2:
         raise ValueError("position must contain exactly two values")
-    if not all(is_int(item) for item in position):
-        raise TypeError("position coordinates must be integers")
+    if not is_int(position[0]) or not is_int(position[1]):
+    raise TypeError("position coordinates must be integers")
     return position
-
 
 def validate_choice(value, allowed, name):
     if not isinstance(value, str):
@@ -42,6 +41,7 @@ def validate_username(value):
     if not isinstance(value, str):
         raise TypeError("username must be str")
     if not _username_pattern.fullmatch(value):
+        #نام کاربری با الگویی که تعریف کردیم تطابق داره یا نه
         raise ValueError("invalid username")
     return value
 
@@ -74,12 +74,3 @@ def manhattan(first, second):
     validate_position(first)
     validate_position(second)
     return abs(first[0] - second[0]) + abs(first[1] - second[1])
-
-
-def format_position(position):
-    return "(%d, %d)" % position
-
-
-def format_money(value):
-    """برای خروجی CLI، Decimal صحیح را بدون پسوند .0 چاپ می‌کند."""
-    return str(value.quantize(Decimal("1"))) if value == value.to_integral_value() else str(value)
